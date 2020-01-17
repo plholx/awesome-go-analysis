@@ -7,7 +7,7 @@ import (
 
 func init() {
 	pflag.StringP("token", "t", "xxx", "GitHub API access_token")
-	pflag.StringP("dsurl", "d", "./data_test.db", "数据库地址")
+	pflag.StringP("dsurl", "d", "data_test.db", "数据库地址")
 	pflag.StringP("rpath", "r", "rfiles", "生成的README路径")
 	pflag.Parse()
 

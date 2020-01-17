@@ -7,15 +7,19 @@ import (
 	"github.com/spf13/viper"
 
 	"github.com/jinzhu/gorm"
-	_ "github.com/lib/pq"
+	_ "github.com/jinzhu/gorm/dialects/sqlite"
 )
 
 var db *gorm.DB
+var dbErr error
 var dbonce sync.Once
 
 func InitDB() {
 	dbonce.Do(func() {
-		db, _ = gorm.Open("sqlite3", viper.GetString("dsurl"))
+		db, dbErr = gorm.Open("sqlite3", viper.GetString("dsurl"))
+		if dbErr != nil {
+			log.Fatal(dbErr)
+		}
 		db.LogMode(true)
 	})
 }

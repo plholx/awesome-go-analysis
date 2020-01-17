@@ -4,7 +4,6 @@ import (
 	"testing"
 
 	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/sqlite"
 
 	aga "awesome-go-analysis"
 )
