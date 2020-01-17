@@ -15,14 +15,6 @@ import (
 
 func main() {
 	InitDB()
-	agis, err1 := GetAGITree(false)
-	if err1 != nil {
-		log.Println(err1)
-	}
-	log.Println("返回数据量", len(agis))
-	if len(agis) > 0 {
-		log.Println("名字：", agis[0].Name)
-	}
 	// 启动README.md文件解析任务
 	StartMDParseJob()
 
