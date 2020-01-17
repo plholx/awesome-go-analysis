@@ -1,0 +1,7 @@
+.idea/
+.vscode/
+awesome-go-analyse*
+restart.sh
+rfiles/
+*.db
+.DS_Store
