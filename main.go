@@ -64,7 +64,7 @@ func StartMDParseJob() {
 				//生成README.md
 				GenerateMd()
 				//自动push,测试push
-				GitPush()
+				GitPush("自动推送新生成的README.md文件")
 			} else {
 				log.Printf("%s文件已解析，不再重复解析", filePath)
 			}

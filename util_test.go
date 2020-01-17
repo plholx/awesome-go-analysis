@@ -19,3 +19,7 @@ func TestTimeSince(t *testing.T) {
 	thenStr := aga.TimeSince(&timex)
 	t.Log(thenStr)
 }
+
+func TestGitPush(t *testing.T) {
+	aga.GitPush("测试自动推送功能")
+}

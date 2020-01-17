@@ -21,7 +21,6 @@ const (
 	spot   = `.`
 	commit = `commit`
 	m      = `-m`
-	msg    = `自动推送生成的README.md`
 	push   = `push`
 )
 
@@ -88,7 +87,7 @@ func TimeSince(then *time.Time) string {
 }
 
 // GitPush 推送当前项目
-func GitPush() {
+func GitPush(msg string) {
 	out, err := exec.Command(git, add, spot).Output()
 	if err != nil {
 		log.Println(err)
