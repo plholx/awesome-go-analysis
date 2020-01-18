@@ -59,13 +59,22 @@ func StartMDParseJob() {
 
 			if filePath, has := CurREADMEFile(); !has {
 				//获取avelino/awesome-go项目中最新的README.md文件
-				filePath, _ := DownloadREADMEFile()
-				//解析awesome-go中的README.md文件,并存入数据库中
-				ParseREADMEFile(viper.GetString("token"), filePath)
-				//生成README.md
-				GenerateMd()
-				//自动push,测试push
-				GitPush("自动推送新生成的README.md文件")
+				filePath, err := DownloadREADMEFile()
+				if err != nil {
+					log.Println("文件下载失败", err)
+				} else {
+					//解析awesome-go中的README.md文件,并存入数据库中
+					err := ParseREADMEFile(viper.GetString("token"), filePath)
+					if err != nil {
+						log.Println("文件解析失败", err)
+					} else {
+						//生成README.md
+						GenerateMd()
+						//自动push,测试push
+						GitPush("自动推送新生成的README.md文件")
+					}
+				}
+
 			} else {
 				log.Printf("%s文件已解析，不再重复解析", filePath)
 			}
