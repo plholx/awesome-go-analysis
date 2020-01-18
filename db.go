@@ -36,7 +36,6 @@ func InitDB() {
 
 // UpdateAGIDescription 更新awesome_go_info表description
 func UpdateAGIDescription(description string, id uint) {
-	db, _ = gorm.Open("sqlite3", "./data_test.db")
 	awesomeGoInfo := AwesomeGoInfo{
 		Description: description,
 		Model: gorm.Model{
