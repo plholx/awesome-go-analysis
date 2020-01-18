@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"log"
 	"sync"
 
@@ -67,17 +68,24 @@ func UpdateAGIGithubInfo(agi *AwesomeGoInfo) {
 	})
 }
 
+func errNR(s *gorm.DB) error {
+	if s != nil && s.RowsAffected < 1 {
+		return sql.ErrNoRows
+	}
+	return nil
+}
+
 // GetAGI 获取awesome_go_info表数据
 func GetAGI(name string, repo bool, category bool) (agi *AwesomeGoInfo, err error) {
 	agi = new(AwesomeGoInfo)
-	db.Where("name = ? and repo = ? and category = ?", name, repo, category).First(agi)
+	err = errNR(db.Where("name = ? and repo = ? and category = ?", name, repo, category).First(agi))
 	return
 }
 
 // GetAGIByCategoryHtmlId 根据CategoryHtmlId获取awesome_go_info表分类数据(类别以锚点id为唯一标识)
 func GetAGIByCategoryHtmlId(categoryHtmlId string) (agi *AwesomeGoInfo, err error) {
 	agi = new(AwesomeGoInfo)
-	db.Where("category_html_id = ? and category = true", categoryHtmlId).First(agi)
+	err = errNR(db.Where("category_html_id = ? and category = true", categoryHtmlId).First(agi))
 	return
 }
 

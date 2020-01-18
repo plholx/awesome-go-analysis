@@ -5,3 +5,4 @@ restart.sh
 rfiles/
 *.db
 .DS_Store
+*.log
