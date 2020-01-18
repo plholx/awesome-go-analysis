@@ -24,10 +24,13 @@ func InitDB() {
 		// 创建表
 		if !db.HasTable(&AwesomeGoInfo{}) {
 			db.CreateTable(&AwesomeGoInfo{})
+			log.Println("创建表 awesome_go_infos")
 		}
 		if !db.HasTable(&GithubRepoRecord{}) {
 			db.CreateTable(&GithubRepoRecord{})
+			log.Println("创建表 github_repo_records")
 		}
+		log.Println("数据库初始化成功")
 	})
 }
 
