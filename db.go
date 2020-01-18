@@ -21,6 +21,13 @@ func InitDB() {
 			log.Fatal(dbErr)
 		}
 		db.LogMode(true)
+		// 创建表
+		if !db.HasTable(&AwesomeGoInfo{}) {
+			db.CreateTable(&AwesomeGoInfo{})
+		}
+		if !db.HasTable(&GithubRepoRecord{}) {
+			db.CreateTable(&GithubRepoRecord{})
+		}
 	})
 }
 
