@@ -1,9 +1,12 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"io"
 	"log"
 	"os/exec"
+	"strings"
 	"time"
 )
 
@@ -22,6 +25,9 @@ const (
 	commit = `commit`
 	m      = `-m`
 	push   = `push`
+
+	ping        = `ping`
+	pingOptions = `-c 4`
 )
 
 // Delay 延迟阻塞至某一时间
@@ -105,4 +111,26 @@ func GitPush(msg string) {
 		log.Println(err)
 	}
 	log.Println(string(out))
+}
+
+// Ping ping ip/domain
+func Ping(ip string) (output string, err error) {
+	cmd := exec.Command(ping, pingOptions, ip)
+	stdout, err := cmd.StdoutPipe()
+	if err != nil {
+		return
+	}
+	cmd.Start()
+	reader := bufio.NewReader(stdout)
+	var strsBuilder strings.Builder
+	for {
+		line, err2 := reader.ReadString('\n')
+		if err2 != nil || io.EOF == err2 {
+			break
+		}
+		log.Print(line)
+		strsBuilder.WriteString(line)
+	}
+	cmd.Wait()
+	return strsBuilder.String(), nil
 }

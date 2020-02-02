@@ -18,6 +18,7 @@ import (
 )
 
 const (
+	githubRawDomain    = "raw.githubusercontent.com"
 	sourceFileURL      = "https://raw.githubusercontent.com/avelino/awesome-go/master/README.md"
 	githubReposAPI     = "https://api.github.com/repos/:owner/:repo?access_token=OAUTH-TOKEN"
 	githubRateLimitAPI = "https://api.github.com/rate_limit?access_token=OAUTH-TOKEN"
@@ -64,10 +65,24 @@ func DownloadREADMEFile() (filePath string, err error) {
 	if exist {
 		return
 	}
-	// 下载文件
-	res, err := http.Get(sourceFileURL)
-	if err != nil {
-		return
+	// 下载文件 添加防止网络错误逻辑，出现网络错误时会继续尝试下载，间隔一分钟*次数，最多尝试6次
+	i := 0
+	var res *http.Response
+	for {
+		// 下载文件前先ping一次
+		Ping("raw.githubusercontent.com")
+		res, err = http.Get(sourceFileURL)
+		if err != nil {
+			i++
+			log.Printf("第%d次下载失败\n", i)
+			if i >= 6 {
+				log.Println("停止下载")
+				return
+			}
+			<-time.NewTimer(time.Minute * time.Duration(i)).C
+			continue
+		}
+		break
 	}
 	defer res.Body.Close()
 	// 保存文件

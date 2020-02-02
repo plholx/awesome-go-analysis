@@ -22,6 +22,15 @@ func main() {
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Hello Gopher!"))
 	})
+	// 测试github的raw.githubusercontent.com是否可ping通
+	mux.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
+		output, err := Ping("raw.githubusercontent.com")
+		if err != nil {
+			w.Write([]byte(err.Error()))
+			return
+		}
+		w.Write([]byte(output))
+	})
 
 	// 创建server对象
 	server := &http.Server{

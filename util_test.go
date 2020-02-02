@@ -23,3 +23,11 @@ func TestTimeSince(t *testing.T) {
 func TestGitPush(t *testing.T) {
 	aga.GitPush("测试自动推送功能")
 }
+
+func TestPing(t *testing.T) {
+	out, err := aga.Ping("raw.githubusercontent.com")
+	if err != nil {
+		t.Log(err)
+	}
+	t.Log("返回内容：\n", out)
+}
