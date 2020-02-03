@@ -31,3 +31,11 @@ func TestPing(t *testing.T) {
 	}
 	t.Log("返回内容：\n", out)
 }
+
+func TestTail(t *testing.T) {
+	out, err := aga.Tail("out.log")
+	if err != nil {
+		t.Log(err)
+	}
+	t.Log("返回内容：\n", out)
+}

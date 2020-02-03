@@ -21,7 +21,7 @@ func InitDB() {
 		if dbErr != nil {
 			log.Fatal(dbErr)
 		}
-		db.LogMode(true)
+		db.LogMode(viper.GetBool("logMode"))
 		// 创建表
 		if !db.HasTable(&AwesomeGoInfo{}) {
 			db.CreateTable(&AwesomeGoInfo{})

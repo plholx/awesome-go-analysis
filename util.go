@@ -28,6 +28,9 @@ const (
 
 	ping        = `ping`
 	pingOptions = `-c 4`
+
+	tail        = `tail`
+	tailOptions = `-n 200`
 )
 
 // Delay 延迟阻塞至某一时间
@@ -116,6 +119,17 @@ func GitPush(msg string) {
 // Ping ping ip/domain
 func Ping(ip string) (output string, err error) {
 	cmd := exec.Command(ping, pingOptions, ip)
+	return execComandPipe(cmd)
+}
+
+// Tail 查看out.log文件内容
+func Tail(file string) (output string, err error) {
+	cmd := exec.Command(tail, tailOptions, file)
+	return execComandPipe(cmd)
+}
+
+// execComandPipe 通过pipe的方式执行cmd命令
+func execComandPipe(cmd *exec.Cmd) (output string, err error) {
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
 		return

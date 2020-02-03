@@ -31,6 +31,15 @@ func main() {
 		}
 		w.Write([]byte(output))
 	})
+	// 查看日志文件
+	mux.HandleFunc("/tail", func(w http.ResponseWriter, r *http.Request) {
+		output, err := Tail("out.log")
+		if err != nil {
+			w.Write([]byte(err.Error()))
+			return
+		}
+		w.Write([]byte(output))
+	})
 
 	// 创建server对象
 	server := &http.Server{
