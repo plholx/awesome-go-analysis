@@ -23,4 +23,5 @@ _该文件中的GitHub仓库信息数据会在每天凌晨1点左右更新,当�
     {{- end}}
 {{- end}}
 
+> 该项目源码[Awesome Go Analysis](https://github.com/plholx/awesome-go-analysis)
 > 更专业的go开源项目分析请移步 [Awesome Go](https://go.libhunt.com/)
