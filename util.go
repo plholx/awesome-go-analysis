@@ -142,7 +142,7 @@ func execComandPipe(cmd *exec.Cmd) (output string, err error) {
 		if err2 != nil || io.EOF == err2 {
 			break
 		}
-		log.Print(line)
+		fmt.Print(line)
 		strsBuilder.WriteString(line)
 	}
 	cmd.Wait()

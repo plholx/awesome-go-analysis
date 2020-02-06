@@ -23,5 +23,4 @@ _该文件中的GitHub仓库信息数据会在每天凌晨1点左右更新,当�
     {{- end}}
 {{- end}}
 
-> 这仅仅是个人练手学习go语言的一个小项目，欢迎指点 <plholx@126.com> ^_^
 > 更专业的go开源项目分析请移步 [Awesome Go](https://go.libhunt.com/)
