@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
 	"math"
@@ -20,8 +21,8 @@ import (
 const (
 	githubRawDomain    = "raw.githubusercontent.com"
 	sourceFileURL      = "https://raw.githubusercontent.com/avelino/awesome-go/master/README.md"
-	githubReposAPI     = "https://api.github.com/repos/:owner/:repo?access_token=OAUTH-TOKEN"
-	githubRateLimitAPI = "https://api.github.com/rate_limit?access_token=OAUTH-TOKEN"
+	githubReposAPI     = "https://api.github.com/repos/:owner/:repo"
+	githubRateLimitAPI = "https://api.github.com/rate_limit"
 	githubDomain       = "https://github.com"
 
 	RFILES_PATH      = "rfiles"
@@ -237,11 +238,23 @@ func ParseREADMEFile(accessToken string, filePath string) (err error) {
 	return
 }
 
+// GitHubApiReq GitHub请求
+func GitHubApiReq(method, url string, body io.Reader) (resp *http.Response, err error) {
+	client := http.Client{}
+	req, err := http.NewRequest(method, url, body)
+	if err != nil {
+		return
+	}
+	log.Println("token:", viper.GetString("token"))
+	req.Header.Add("Authorization", " token "+viper.GetString("token"))
+	resp, err = client.Do(req)
+	return
+}
+
 // GitHubAPIReqControl 控制是否可以进行GitHub的API调用
+// 通过访问rate_limit API，校验access_token是否有效，及通过剩余次数控制API的访问时机
 func GitHubAPIReqControl(accessToken string) (ok bool, err error) {
-	// 通过访问rate_limit API，校验access_token是否有效，及通过剩余次数控制API的访问时机
-	apiURL := strings.Replace(githubRateLimitAPI, "OAUTH-TOKEN", accessToken, -1)
-	res, err := http.Get(apiURL)
+	res, err := GitHubApiReq("GET", githubRateLimitAPI, nil)
 	if err != nil {
 		return
 	}
@@ -281,8 +294,7 @@ func GitHubAPIReqControl(accessToken string) (ok bool, err error) {
 func GetRepoInfo(repoOwner, repoName, accessToken string) (agi *AwesomeGoInfo, err error) {
 	repoFullName := repoOwner + "/" + repoName
 	apiURL := strings.Replace(githubReposAPI, ":owner/:repo", repoFullName, -1)
-	apiURL = strings.Replace(apiURL, "OAUTH-TOKEN", accessToken, -1)
-	res, err := http.Get(apiURL)
+	res, err := GitHubApiReq("GET", apiURL, nil)
 	if err != nil {
 		return
 	}
