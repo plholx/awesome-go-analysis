@@ -153,7 +153,7 @@ func GetAgiReposByParentId(parentId uint) (agis []*AwesomeGoInfo, err error) {
 	for rows.Next() {
 		tmpAGI := new(AwesomeGoInfo)
 		db.ScanRows(rows, tmpAGI)
-		tmpAGI.RepoCreatedAtStr = tmpAGI.RepoCreatedAt.Format("2006-01-02")
+		tmpAGI.RepoCreatedAtStr = tmpAGI.RepoCreatedAt.Format("2006/01/02")
 		tmpAGI.RepoPushedAtStr = tmpAGI.RepoPushedAt.Format("2006-01-02 15:04:05")
 		tmpAGI.TimeSince = TimeSince(tmpAGI.RepoPushedAt)
 		agis = append(agis, tmpAGI)
