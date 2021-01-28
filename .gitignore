@@ -6,3 +6,5 @@ rfiles/
 *.db
 .DS_Store
 *.log
+
+awesome-go/

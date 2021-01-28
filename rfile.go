@@ -16,6 +16,7 @@ import (
 	"time"
 
 	"github.com/spf13/viper"
+	"gopkg.in/russross/blackfriday.v2"
 )
 
 const (
@@ -30,6 +31,7 @@ const (
 	RFILE            = RFILES_PATH + string(os.PathSeparator) + RFILES_FILE_NAME
 	README_TMPL      = "tmpl.md"
 	README           = "README.md"
+	INDEX            = "index.html"
 )
 
 // init 创建必要的文件路径
@@ -100,6 +102,17 @@ func DownloadREADMEFile() (filePath string, err error) {
 	writer.Write(bytes)
 	writer.Flush()
 	return
+}
+
+// DownloadREADMEFileByGitClone 通过cloneh ttps://github.com/avelino/awesome-go仓库获取README.md文件，
+// 因为现在https://raw.githubusercontent.com/avelino/awesome-go/master/README.md路径无法访问到
+// 返回文件路径
+func DownloadREADMEFileByGitClone() (filePath string, err error) {
+	err = GitFetchAG()
+	if err != nil {
+		return "", err
+	}
+	return "awesome-go/README.md", nil
 }
 
 // ParseREADMEFile 解析awesome-go中的README.md文件,并存入数据库中
@@ -407,4 +420,22 @@ func GenerateMd() (err error) {
 	}
 	data.GenTime = time.Now().Format("2006-01-02 15:04:05")
 	return t.Execute(f, data)
+}
+
+func GenerateHtml() error {
+	readmeFilePath := viper.GetString("rpath") + string(os.PathSeparator) + README
+	fmt.Println(readmeFilePath)
+	bytes, err := ioutil.ReadFile(readmeFilePath)
+	if err != nil {
+		return err
+	}
+	output := blackfriday.Run(bytes)
+	indexFilePath := viper.GetString("rpath") + string(os.PathSeparator) + INDEX
+	fmt.Println(indexFilePath)
+	f, err := os.Create(indexFilePath)
+	if err != nil {
+		return err
+	}
+	_, err = f.Write(output)
+	return err
 }

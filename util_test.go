@@ -1,6 +1,11 @@
 package main_test
 
 import (
+	"bufio"
+	"context"
+	"fmt"
+	"io"
+	"os/exec"
 	"testing"
 	"time"
 
@@ -38,4 +43,30 @@ func TestTail(t *testing.T) {
 		t.Log(err)
 	}
 	t.Log("返回内容：\n", out)
+}
+
+func TestTailf(t *testing.T) {
+	ctx, cancelFunc := context.WithCancel(context.Background())
+	defer cancelFunc()
+	cmd := exec.CommandContext(ctx, "tail", "-f", "out.log")
+	stdout, err := cmd.StdoutPipe()
+	if err != nil {
+		return
+	}
+	cmd.Start()
+	reader := bufio.NewReader(stdout)
+	for {
+		line, err2 := reader.ReadString('\n')
+		if err2 != nil || io.EOF == err2 {
+			fmt.Println("退出循环")
+			break
+		}
+		fmt.Print(line)
+		if line == "shutdown\n" {
+			fmt.Println("准备退出。。。")
+			cancelFunc()
+		}
+	}
+	fmt.Println("结束tail")
+	cmd.Wait()
 }

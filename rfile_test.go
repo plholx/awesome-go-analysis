@@ -2,6 +2,7 @@ package main_test
 
 import (
 	"io/ioutil"
+	"log"
 	"testing"
 
 	"github.com/spf13/viper"
@@ -36,4 +37,19 @@ func TestGitHubApiReq(t *testing.T) {
 		return
 	}
 	t.Log("响应数据：", string(bytes))
+}
+
+func TestGenerateHtml(t *testing.T) {
+	err := aga.GenerateHtml()
+	if err != nil {
+		t.Log(err)
+	}
+}
+
+func TestDownloadREADMEFileByGitClone(t *testing.T) {
+	filePath, err := aga.DownloadREADMEFileByGitClone()
+	if err != nil {
+		log.Println("err: ", err)
+	}
+	log.Println("filePath:", filePath)
 }

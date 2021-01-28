@@ -95,12 +95,14 @@ func StartMDParseJob() {
 	}()
 }
 
+// ParseJob 解析README.md文件任务
 func ParseJob() {
 	if filePath, has := CurREADMEFile(); !has {
 		// 获取avelino/awesome-go项目中最新的README.md文件
-		filePath, err := DownloadREADMEFile()
+		// filePath, err := DownloadREADMEFile()
+		filePath, err := DownloadREADMEFileByGitClone()
 		if err != nil {
-			log.Println("文件下载失败", err)
+			log.Println("clone仓库失败: ", err)
 		} else {
 			// 解析awesome-go中的README.md文件,并存入数据库中
 			err := ParseREADMEFile(viper.GetString("token"), filePath)

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"os"
 	"os/exec"
 	"strings"
 	"time"
@@ -25,12 +26,17 @@ const (
 	commit = `commit`
 	m      = `-m`
 	push   = `push`
+	clone  = `clone`
+	fetch  = `fetch`
+	rebase = `rebase`
 
 	ping        = `ping`
 	pingOptions = `-c 4`
 
 	tail        = `tail`
 	tailOptions = `-n 200`
+
+	agRepo = `https://github.com/avelino/awesome-go.git`
 )
 
 // Delay 延迟阻塞至某一时间
@@ -95,6 +101,32 @@ func TimeSince(then *time.Time) string {
 	}
 }
 
+// GitFetchAG 拉取https://github.com/avelino/awesome-go仓库
+func GitFetchAG() error {
+	_, err := os.Stat("awesome-go")
+	if !(err == nil || os.IsExist(err)) {
+		// 仓库不存在, 开始clone
+		out, err := execComandPipe(exec.Command(git, clone, agRepo))
+		if err != nil {
+			return err
+		}
+		log.Println(string(out))
+	}
+
+	out, err := execComandPipe(exec.Command("cd", "awesome-go", "\n", git, fetch))
+	if err != nil {
+		return err
+	}
+	log.Println(string(out))
+
+	out, err = execComandPipe(exec.Command("cd", "awesome-go", "\n", git, rebase))
+	if err != nil {
+		return err
+	}
+	log.Println(string(out))
+	return nil
+}
+
 // GitPush 推送当前项目
 func GitPush(msg string) {
 	out, err := exec.Command(git, add, spot).Output()
@@ -132,9 +164,12 @@ func Tail(file string) (output string, err error) {
 func execComandPipe(cmd *exec.Cmd) (output string, err error) {
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
-		return
+		return "", err
 	}
-	cmd.Start()
+	err = cmd.Start()
+	if err != nil {
+		return "", err
+	}
 	reader := bufio.NewReader(stdout)
 	var strsBuilder strings.Builder
 	for {
@@ -143,8 +178,14 @@ func execComandPipe(cmd *exec.Cmd) (output string, err error) {
 			break
 		}
 		fmt.Print(line)
-		strsBuilder.WriteString(line)
+		_, err := strsBuilder.WriteString(line)
+		if err != nil {
+			return "", err
+		}
 	}
-	cmd.Wait()
+	err = cmd.Wait()
+	if err != nil {
+		return "", err
+	}
 	return strsBuilder.String(), nil
 }
