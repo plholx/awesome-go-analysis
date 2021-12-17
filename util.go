@@ -1,13 +1,7 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
-	"io"
-	"log"
-	"os"
-	"os/exec"
-	"strings"
 	"time"
 )
 
@@ -19,24 +13,6 @@ const (
 	Week   = 7 * Day
 	Month  = 30 * Day
 	Year   = 12 * Month
-
-	git    = `git`
-	add    = `add`
-	spot   = `.`
-	commit = `commit`
-	m      = `-m`
-	push   = `push`
-	clone  = `clone`
-	fetch  = `fetch`
-	rebase = `rebase`
-
-	ping        = `ping`
-	pingOptions = `-c 4`
-
-	tail        = `tail`
-	tailOptions = `-n 200`
-
-	agRepo = `https://github.com/avelino/awesome-go.git`
 )
 
 // Delay 延迟阻塞至某一时间
@@ -99,93 +75,4 @@ func TimeSince(then *time.Time) string {
 	default:
 		return fmt.Sprintf("%d years %s", diff/Year, lbl)
 	}
-}
-
-// GitFetchAG 拉取https://github.com/avelino/awesome-go仓库
-func GitFetchAG() error {
-	_, err := os.Stat("awesome-go")
-	if !(err == nil || os.IsExist(err)) {
-		// 仓库不存在, 开始clone
-		out, err := execComandPipe(exec.Command(git, clone, agRepo))
-		if err != nil {
-			return err
-		}
-		log.Println(string(out))
-	}
-
-	out, err := execComandPipe(exec.Command("cd", "awesome-go", "\n", git, fetch))
-	if err != nil {
-		return err
-	}
-	log.Println(string(out))
-
-	out, err = execComandPipe(exec.Command("cd", "awesome-go", "\n", git, rebase))
-	if err != nil {
-		return err
-	}
-	log.Println(string(out))
-	return nil
-}
-
-// GitPush 推送当前项目
-func GitPush(msg string) {
-	out, err := exec.Command(git, add, spot).Output()
-	if err != nil {
-		log.Println(err)
-	}
-	log.Println(string(out))
-
-	out, err = exec.Command(git, commit, m, msg).Output()
-	if err != nil {
-		log.Println(err)
-	}
-	log.Println(string(out))
-
-	out, err = exec.Command(git, push).Output()
-	if err != nil {
-		log.Println(err)
-	}
-	log.Println(string(out))
-}
-
-// Ping ping ip/domain
-func Ping(ip string) (output string, err error) {
-	cmd := exec.Command(ping, pingOptions, ip)
-	return execComandPipe(cmd)
-}
-
-// Tail 查看out.log文件内容
-func Tail(file string) (output string, err error) {
-	cmd := exec.Command(tail, tailOptions, file)
-	return execComandPipe(cmd)
-}
-
-// execComandPipe 通过pipe的方式执行cmd命令
-func execComandPipe(cmd *exec.Cmd) (output string, err error) {
-	stdout, err := cmd.StdoutPipe()
-	if err != nil {
-		return "", err
-	}
-	err = cmd.Start()
-	if err != nil {
-		return "", err
-	}
-	reader := bufio.NewReader(stdout)
-	var strsBuilder strings.Builder
-	for {
-		line, err2 := reader.ReadString('\n')
-		if err2 != nil || io.EOF == err2 {
-			break
-		}
-		fmt.Print(line)
-		_, err := strsBuilder.WriteString(line)
-		if err != nil {
-			return "", err
-		}
-	}
-	err = cmd.Wait()
-	if err != nil {
-		return "", err
-	}
-	return strsBuilder.String(), nil
 }

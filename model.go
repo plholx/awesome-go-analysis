@@ -1,12 +1,8 @@
 package main
 
-import (
-	"time"
+import "time"
 
-	"github.com/jinzhu/gorm"
-)
-
-// AwesomeGoInfo awesome-go项目仓库最新信息表
+// AwesomeGoInfo awesome-go项目仓库信息表
 //
 // Repo 是否是一个项目
 // Category 是否是一类目
@@ -14,38 +10,6 @@ import (
 // Description 描述
 // Homepage 官网主页地址
 // CategoryHtmlId 源README.md文件中类别的锚点id
-type AwesomeGoInfo struct {
-	gorm.Model
-	RepoInfo
-
-	ParentId       uint   `gorm:"default:0"`
-	Repo           bool   `gorm:"default:false"`
-	Category       bool   `gorm:"default:false"`
-	Name           string `gorm:"type:varchar(50)"`
-	Description    string `gorm:"type:varchar(1000)"`
-	Homepage       string `gorm:"type:varchar(500)"`
-	CategoryHtmlId string `gorm:"type:varchar(100)"`
-
-	Depth            uint   `gorm:"-"`
-	Spaces           string `gorm:"-"`
-	TitleMarks       string `gorm:"-"`
-	RepoCreatedAtStr string `gorm:"-"`
-	RepoPushedAtStr  string `gorm:"-"`
-	WithReposTable   bool   `gorm:"-"`
-	TimeSince        string `gorm:"-"`
-}
-
-// GithubRepoRecord awesome-go项目仓库信息记录表
-//
-// AgiId awesome_go_info表主键
-type GithubRepoRecord struct {
-	gorm.Model
-	AgiId uint `gorm:"default:0"`
-	RepoInfo
-}
-
-// RepoInfo 仓库信息
-//
 // RepoName 项目仓库名称
 // RepoFullName 项目仓库完整名称
 // RepoOwner 项目作者
@@ -57,21 +21,39 @@ type GithubRepoRecord struct {
 // RepoForksCount 项目fork数
 // RepoStargazersCount 项目star数
 // RepoSubscribersCount 项目watch数
-type RepoInfo struct {
-	RepoName             string `gorm:"type:varchar(50)"`
-	RepoFullName         string `gorm:"type:varchar(100)"`
-	RepoOwner            string `gorm:"type:varchar(50)"`
-	RepoHtmlURL          string `gorm:"type:varchar(500)"`
-	RepoDescription      string `gorm:"type:varchar(1000)"`
-	RepoCreatedAt        *time.Time
-	RepoPushedAt         *time.Time
-	RepoHomepage         string `gorm:"type:varchar(500)"`
-	RepoSize             uint   `gorm:"default:0"`
-	RepoForksCount       uint   `gorm:"default:0"`
-	RepoStargazersCount  uint   `gorm:"default:0"`
-	RepoSubscribersCount uint   `gorm:"default:0"`
-	RepoOpenIssuesCount  uint   `gorm:"default:0"`
-	RepoLicenseName      string `gorm:"type:varchar(100)"`
-	RepoLicenseSpdxId    string `gorm:"type:varchar(50)"`
-	RepoLicenseURL       string `gorm:"type:varchar(500)"`
+type AwesomeGoInfo struct {
+	ID                   uint      `db:"id"`
+	ParentId             uint      `db:"parent_id"`
+	Repo                 bool      `db:"repo"`
+	Category             bool      `db:"category"`
+	Name                 string    `db:"name"`
+	Description          string    `db:"description"`
+	Homepage             string    `db:"homepage"`
+	CategoryHtmlId       string    `db:"category_html_id"`
+	RepoName             string    `db:"repo_name"`
+	RepoFullName         string    `db:"repo_full_name"`
+	RepoOwner            string    `db:"repo_owner"`
+	RepoHtmlURL          string    `db:"repo_html_url"`
+	RepoDescription      string    `db:"repo_description"`
+	RepoCreatedAt        *time.Time `db:"repo_created_at"`
+	RepoPushedAt         *time.Time `db:"repo_pushed_at"`
+	RepoHomepage         string    `db:"repo_homepage"`
+	RepoSize             uint      `db:"repo_size"`
+	RepoForksCount       uint      `db:"repo_forks_count"`
+	RepoStargazersCount  uint      `db:"repo_stargazers_count"`
+	RepoSubscribersCount uint      `db:"repo_subscribers_count"`
+	RepoOpenIssuesCount  uint      `db:"repo_open_issues_count"`
+	RepoLicenseName      string    `db:"repo_license_name"`
+	RepoLicenseSpdxId    string    `db:"repo_license_spdx_id"`
+	RepoLicenseURL       string    `db:"repo_license_url"`
+	CreatedAt            *time.Time `db:"created_at"`
+	UpdatedAt            *time.Time `db:"updated_at"`
+
+	Depth            uint
+	Spaces           string
+	TitleMarks       string
+	RepoCreatedAtStr string
+	RepoPushedAtStr  string
+	WithReposTable   bool
+	TimeSince        string
 }

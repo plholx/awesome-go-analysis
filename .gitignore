@@ -8,3 +8,4 @@ rfiles/
 *.log
 
 awesome-go/
+temp/
