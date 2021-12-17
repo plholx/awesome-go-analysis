@@ -14,4 +14,6 @@ func main(){
 	InitDB()
 	// 启动README.md文件解析任务
 	StartReadmeParseJob(path, token)
+	signal := make(chan int)
+	<-signal
 }

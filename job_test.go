@@ -65,3 +65,13 @@ func TestGenerateMd(t *testing.T){
 	analysis.InitDB()
 	analysis.GenerateMd("temp");
 }
+
+func TestGetAGI(t *testing.T){
+	analysis.InitDB()
+	id, err := analysis.GetAGI("mewkiz/flac", true, false)
+	if err != nil{
+		log.Printf("%+v\n", err)
+		return
+	}
+	log.Printf("id: %d\n", id)
+}
